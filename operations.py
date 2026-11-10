@@ -1,7 +1,7 @@
 """Read-only tasks, security, integrations, settings and operations."""
 from catalog import case
-from core import check, enum, equal, field, forbid_fields, id_segment as s, row, snapshot_ids, subset, unique, utc, settings
-from auth_sandbox import PRIVATE, audit_has, user
+from core import check, enum, equal, field, id_segment as s, row, snapshot_ids, subset, unique, utc, settings
+from auth_sandbox import audit_has, user
 
 
 def pages(c, path, filters, role='A'):
@@ -12,74 +12,10 @@ def pages(c, path, filters, role='A'):
     return first['items']+second['items']
 
 
-def task(item):
-    for k in ('id','sandboxId','sandboxName','name','ownerId','ownerName'):
-        field(item,k,str)
-    enum(item,'type',{'SQL','NOTEBOOK','JOB'})
-    enum(item,'status',{'QUEUED','RUNNING','SUCCEEDED','FAILED','CANCELED'})
-    utc(item,'startedAt')
-    utc(item,'finishedAt',nullable=True)
-    field(item,'durationSec',(int,float),nullable=True)
-    return item
-
-
-@case('TC-18-01', needs='sandbox_owned task_keyword task_expected_ids')
-def task_listing(c):
-    filters = {'sandboxId':c.fixture('sandbox_owned'),'status':'RUNNING','keyword':c.fixture('task_keyword')}
-    pages(c,'/tasks',filters)
-    items = c.all('/tasks',query=filters)
-    equal(snapshot_ids(items),sorted(c.fixture('task_expected_ids')),'任务结果集合')
-    for item in items:
-        task(item)
-        subset(item,{'sandboxId':filters['sandboxId'],'status':'RUNNING','finishedAt':None,'durationSec':None})
-
-
-@case('TC-19-01', needs='task_detail_samples')
-def task_detail(c):
-    for sample in c.many('task_detail_samples',2):
-        data = task(c.get('/tasks/'+s(sample['id'])))
-        subset(data,sample,'任务及预置日志顺序')
-        check(all(isinstance(x,str) for x in field(data,'logs',list)),'日志不是逐行字符串')
-        items = c.all('/tasks',query={'sandboxId':data['sandboxId'],'keyword':data['name']})
-        listed = row(items,'id',data['id'])
-        for key,value in listed.items():
-            if key!='logs':
-                subset(data,{key:value},'列表和详情')
-
-
-@case('TC-19-02')
-def missing_task(c):
-    c.send('GET','/tasks/'+s(unique())).error(404,'TASK_NOT_FOUND')
-
-
-@case('TC-20-01', needs='audit_filter audit_expected_ids')
-def audit_filter(c):
-    for result in ('SUCCESS','DENIED'):
-        query = {'keyword':c.fixture('audit_filter'),'result':result}
-        c.page('/audit-logs',role='M',query={**query,'page':1,'pageSize':2})
-        items = c.all('/audit-logs',role='M',query=query)
-        equal(snapshot_ids(items),sorted(c.fixture('audit_expected_ids')[result]),'审计筛选集合')
-        for x in items:
-            for k in ('id','actorName','action','targetType','targetId','ip'):
-                field(x,k,str)
-            utc(x,'at')
-            equal(x.get('result'),result,'审计结果')
-        forbid_fields(items,PRIVATE,'审计列表')
-
-
 @case('TC-20-02', layer='业务', remainder='用真实前端核对分析员安全菜单隐藏。')
 def no_audit_access(c):
     for path in ('/audit-logs','/violations'):
         c.send('GET',path,query={'page':1,'pageSize':20}).error(403)
-
-
-@case('TC-20-03', layer='业务', needs='audit_targets',
-      remainder='先执行或由联调方触发七种真实操作并记录其目标、操作人、action，再用本脚本回查审计。')
-def seven_audits(c):
-    samples = c.fixture('audit_targets')
-    equal(set(samples),{'A07','A09','A13','A14','A16','A17','A18'},'需要回查的七项审计')
-    for details in samples.values():
-        audit_has(c,details['targetId'],details['actorName'],details['action'])
 
 
 @case('TC-21-01', needs='violation_high_open_ids violation_empty_filters')
@@ -248,19 +184,3 @@ def unauthorized_settings(c):
         value = 45 if baseline['defaultSandboxDays']!=45 else 46
         c.send('PUT','/settings',body={**baseline,'defaultSandboxDays':value}).error(403)
         equal(c.get('/settings',role='M'),before,'越权后的平台配置')
-
-
-@case('TC-28-01', needs='operation_samples', remainder='失败夹具需由环境方注入可核对的错误，并与环境详情比对。')
-def operation_detail(c):
-    for fixture in c.many('operation_samples',2):
-        target = fixture['id']
-        path = '/operations/'+s(target)
-        item = c.poll(lambda:c.get(path),lambda x:x.get('status') in ('SUCCEEDED','FAILED','SIMULATED'),'操作终态')
-        subset(item,fixture,'操作详情')
-        for key in ('id','sandboxId','type','status','phase','runtimeMode'):
-            field(item,key,str)
-        utc(item,'updatedAt')
-        enum(item,'runtimeMode',{'REAL','MOCK'})
-        if item['status']=='FAILED':
-            for key in ('failureCode','failureMessage'):
-                field(item,key,str)

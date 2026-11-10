@@ -1,58 +1,47 @@
 # 数据沙箱接口测试脚本
 
-测试基线为「后端交付-20261027」及《数据沙箱平台-接口测试用例-20261027.xlsx》。脚本以 Excel 的 TC 编号运行，分为**接口契约**和**业务规则**两层。运行环境为 Python 3.10 或更高版本，只使用 Python 标准库。
+当前用例来自《数据沙箱平台-接口测试用例-v1.3.xlsx》，依据《数据沙箱-前端接口清单 v4》和《接口清单-测试参考-20261110》。共 135 条当前用例，沿用 Excel 编号。脚本适用 Python 3.10+，使用标准库。
 
-## 首次运行
+## 运行
 
-在 PowerShell 进入解压后的脚本目录。
+在脚本目录打开 PowerShell。
 
 ~~~powershell
-python .\run.py --self-test
 python .\run.py --list
-python .\run.py --show --case TC-12-08
+python .\run.py --self-test
+python .\run.py --show --case TC-V4-SBX04-04
+Copy-Item .\fixtures.example.json .\fixtures.local.json
 ~~~
 
-本地自检启动临时回环服务，验证脚本自己的会话、失败断言、重放和记录逻辑。输出仅代表本地脚本自检。
-
-1. 将 fixtures.example.json 复制为 fixtures.local.json。填写测试环境的完整 base_url（含 /api/v1）。把 environment 设为后端环境提供方确认的 MOCK 或 REAL。
-2. ready_interfaces 填该环境确认就绪的接口编号，例如模板中的 [1, 2, 3, 4]。当指定了接口清单时，脚本会预检所选用例和已知回查依赖。接口都已就绪时可填写 null。前端内存 Mock 不能直接运行这些 HTTP 脚本。
-3. 从测试环境管理员处领取账号，通过进程环境变量提供。SANDBOX_QA_A_USER 和 SANDBOX_QA_A_PASSWORD 对应分析员，SANDBOX_QA_M_USER 和 SANDBOX_QA_M_PASSWORD 对应管理员。按需设置同样命名格式的 M2（第二位管理员）、E（非 OWNER 的 EDITOR）、OTHER（另一沙箱的合法用户）。
-4. 用 --show 查看单条用例的必填夹具及操作步骤。可用 --fixture-template 生成选中用例的空配置，再按「夹具说明」填写。写入与拒绝写入的用例须加 --allow-write，并使用隔离的测试环境和独立测试数据。
+1. 填写本地配置中的测试 API 地址（包含 /api/v1）、后端契约 profile、运行模式 environment，以及确认就绪的接口编号 ready_interfaces。
+2. 在当前终端设置登录账号和口令。A 为分析员，M 为管理员，E 为指定沙箱内的非拥有者 EDITOR，OTHER 为独立对照账号。变量名为 SANDBOX_QA_角色_USER、SANDBOX_QA_角色_PASSWORD。账号和口令从测试环境领取。
+3. 用 --show 查看必填夹具，用 --fixture-template 生成所选用例的配置草稿。将每条用例使用的独立数据填写在 cases 下。具体形状见《夹具说明》。
+4. 先用 --probe 核对匿名获取 CSRF Token 与匿名访问 /me。含写入尝试的用例需在隔离环境加 --allow-write。重复执行前按测试环境约定恢复夹具，特别是建箱、加成员和注销。
 
 ~~~powershell
-Copy-Item .\fixtures.example.json .\fixtures.local.json
-python .\run.py --probe --config .\fixtures.local.json
-python .\run.py --case TC-01-01 --case TC-02-01 --config .\fixtures.local.json --report .\reports\auth-mock.json
-python .\run.py --fixture-template --case TC-12-08 --case TC-30-10
-python .\run.py --case TC-12-08 --config .\fixtures.local.json --allow-write --report .\reports\sandbox-mock.json
+python .\run.py --probe
+python .\run.py --case TC-V4-AUTH03-01 --report .\reports\auth-v4-mock.json
+python .\run.py --fixture-template --case TC-V4-SBX04-04
+python .\run.py --case TC-V4-SBX04-04 --allow-write --report .\reports\create-replay-v4-mock.json
 ~~~
 
---case 支持通配符，例如 --case "TC-30-*"。--layer contract 筛选接口契约，--layer business 筛选业务规则。可以组合 --layer 与 --case。报告文件使用新路径保存，以便区分多次运行。配置和报告可能包含内部地址或业务对象 ID，按团队约定流转。
+支持 --case "TC-V4-SBX06-*"、--layer contract 和 --layer business。报告路径需是新文件，避免覆盖已有证据。报告记录版本配置、运行模式、用例、HTTP 状态、业务码、requestId 和回查路径。报告不记录口令、Cookie、CSRF、请求体、响应体和查询参数。
 
-## 结果判定
+## 版本和执行门槛
 
-| 结果 | 含义 |
-| --- | --- |
-| 通过 | 本用例的脚本断言全部通过 |
-| 失败 | 观察到 HTTP、业务码、响应字段或业务副作用与断言不符 |
-| 阻塞 | 缺少服务、账号、夹具、就绪接口或确认后的契约 |
-| 需复核 | 已自动检查接口部分，浏览器、外部数据或待确认条件仍需补充证据 |
-| 人工验证 | 通过 --show 获取浏览器操作步骤和断言 |
-| 脚本或数据错误 | 运行未完成，检查配置结构、夹具与脚本 |
+| 配置 profile | 默认账号登录入口 | 默认操作单前缀 | 用法 |
+| --- | --- | --- | --- |
+| v4-20261110 | /auth/dev-login | /operations | 按 v4 联调契约，environment 选 MOCK 或 REAL。 |
+| b20ab05-20261110 | /auth/login | /sandboxes/operations | 用于已确认的 b20ab05 参考包 MOCK。 |
 
-退出码 0 表示所选测试全部通过。1 表示有失败或执行错误。2 表示所选范围仍有阻塞或待复核。报告记录用例、环境、HTTP 状态、业务码、requestId 及回查路径。口令、会话 Cookie、CSRF Token、响应体与查询参数不写入报告。业务环境的实际执行结果需填回 Excel 的「执行结果」和「实际结果及证据」。
+部署说明与参考包的登录写法有差异。请以测试环境实际配置为准，必要时显式填写 login_path 和 operation_path。正式 SSO 的浏览器回调另行验证。参考包的账号密码验证与 v4 正式 SSO 分开记录。
 
-配置变更用例会尝试恢复基线，环境启停会尝试恢复初始状态。建箱、申请、审批、违规处理、成员移除等操作会使用实际测试数据。每轮使用独立夹具，并按测试环境约定重置数据。交付接口缺少沙箱删除及通用数据清理操作，清理由测试环境方完成。
+- 预期明确的用例可在接口、账号及夹具就绪后执行。参考包验证只在 b20ab05 配置中运行。
+- 待确认和待联调的脚本须先确认环境及验收口径，再将编号加入 confirmed_cases，并按用例配置补齐数据和状态码。ready_interfaces 检查主接口及必要回查接口。
+- 当前索引有 126 条提供脚本入口，其中部分需补证或联调条件。7 条浏览器用例和 2 条外部依赖／待定契约用例用 --show 查看步骤、预期和关联事项。
+- 脚本的状态为通过、失败、阻塞、需复核、人工验证或脚本／数据错误。需复核表示已执行自动部分，仍应补充页面、审计或底层运行证据。MOCK 和 REAL 分开出具结果。
+- 退出码 0 表示所选项均通过，1 表示有失败或脚本／数据错误，2 表示存在待处理项。本地自检使用脚本启动的临时回环模拟服务。
 
-## 与本周 MVP 的边界
+## 新版沙箱的判定
 
-本套脚本使用 Excel 对应的交付契约。项目的第 2 周工作计划另有一套后端 MVP 口径。两套环境先由项目组确认各自部署版本，再选对应的验收依据。
-
-| 项目 | Excel 交付契约 | 第 2 周后端 MVP 计划 |
-| --- | --- | --- |
-| 登录 | POST /auth/dev-login | POST /auth/login |
-| 当前用户 | roles 与 permissions 数组 | 单字段 role 与 username |
-| 建箱 | POST /sandboxes 提交待审批申请 | 仅管理员创建并异步受理 |
-| 沙箱删除 | 交付清单无对应接口 | 计划提供 DELETE /sandboxes/{sandboxId} |
-
-上传会话、分片与完成，下载消费入口和有效期，实际清理与导出水印，按 Excel「待确认项」及 --show 的条件安排。用例索引保留了这些场景的前置条件、操作步骤与预期。部分契约分歧已接入参数化脚本，必须填入项目组确认后的口径才能执行。
+建箱首次为 201，回查沙箱和环境的开通状态。整箱和单环境启停以 202 受理，终态需回查。单环境只验证目标发生变化。注销按 query 中的 version 传入乐观锁，回查已注销历史。加成员直接写入，成员事件通过 member-events 核对。参考包字段、HTTP 或回执仍有差异的部分使用明确的配置，并在报告标出适用版本。

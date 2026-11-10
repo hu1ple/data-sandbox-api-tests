@@ -128,8 +128,9 @@ class Response:
         value = self.body.get('code') if isinstance(self.body, dict) else None
         return value if isinstance(value, str) else None
 
-    def success(self, kind=dict):
-        equal(self.status, 200, 'HTTP 状态')
+    def success(self, kind=dict, *, status=200):
+        allowed = (status,) if isinstance(status, int) else status
+        check(self.status in allowed, f'HTTP {self.status}，预期 {allowed}')
         field(self.body, 'requestId', str)
         return field(self.body, 'data', kind)
 
@@ -145,13 +146,13 @@ class Response:
 
     def error(self, status, code=None):
         allowed = (status,) if isinstance(status, int) else status
+        check(all(type(item) is int and 400 <= item <= 599 for item in allowed), '预期错误 HTTP 须为 4xx 或 5xx')
         check(self.status in allowed, f'HTTP {self.status}，预期 {allowed}')
         observed = field(self.body, 'code', str)
         if code is not None:
             allowed_codes = (code,) if isinstance(code, str) else code
             check(observed in allowed_codes, f'业务码与预期 {allowed_codes} 不符')
-        message = field(self.body, 'message', str)
-        check(re.search(r'[\u3400-\u9fff]', message), '错误 message 未包含中文')
+        field(self.body, 'message', str)
         field(self.body, 'requestId', str)
         check('data' not in self.body, '错误体不应包含成功响应 data')
 
@@ -236,8 +237,10 @@ class Client:
         return response
 
     def login(self, username, password):
-        data = self.request('POST', '/auth/dev-login',
+        data = self.request('POST', self.context.login_path,
                             body={'username': username, 'password': password}).success()
+        check(any(cookie.name == 'SANDBOX_SESSION' for cookie in self.cookies),
+              '登录未建立 SANDBOX_SESSION 会话')
         self.token = None
         return data
 
@@ -265,11 +268,27 @@ class Context:
         self.ready = config.get('ready_interfaces')
         self.values = {**config.get('fixtures', {}), **config.get('cases', {}).get(case_id, {})}
 
+    @property
+    def reference(self):
+        return self.config.get('profile') == 'b20ab05-20261110'
+
+    @property
+    def login_path(self):
+        return self.config.get('login_path') or ('/auth/login' if self.reference else '/auth/dev-login')
+
+    @property
+    def login_api(self):
+        return 'AUTH05' if self.login_path == '/auth/login' else 'AUTH02'
+
+    @property
+    def operation_path(self):
+        return self.config.get('operation_path') or ('/sandboxes/operations' if self.reference else '/operations')
+
     def require_route(self, method, path):
         for api, verb, pattern in self.routes:
             if method == verb and pattern.fullmatch(path):
                 if self.ready is not None and api not in self.ready:
-                    raise Blocked(f'依赖接口 API-{api:02} 未列入 ready_interfaces')
+                    raise Blocked(f'依赖接口 {api} 未列入 ready_interfaces')
                 return
         raise Blocked(f'{method} {path} 超出已登记的交付契约')
 
@@ -284,6 +303,12 @@ class Context:
         if not isinstance(values, list) or len(values) < count:
             raise Blocked(f'{key} 至少需要 {count} 个独立夹具')
         return values[:count]
+
+    def confirmation(self, key, options):
+        value = self.values.get(key)
+        if value not in options:
+            raise Blocked(f'请填入 {key} 的已确认口径，取值范围 {options}')
+        return value
 
     def credentials(self, role):
         username = environ.get(f'SANDBOX_QA_{role}_USER')
@@ -319,8 +344,8 @@ class Context:
         data = self.get(path, role=role, query=query)
         return page_result(data, query)
 
-    def all(self, path, *, role='A', query=None):
-        params = {**(query or {}), 'page': 1, 'pageSize': 20}
+    def all(self, path, *, role='A', query=None, page_size=20):
+        params = {**(query or {}), 'page': 1, 'pageSize': page_size}
         first = self.page(path, role=role, query=params)
         items = list(first['items'])
         total = first['total']
@@ -332,6 +357,8 @@ class Context:
             equal(next_page['total'], total, '分页查询 total')
             items.extend(next_page['items'])
         equal(len(items), total, '实际分页记录数')
+        if all(isinstance(item.get('id'),str) for item in items):
+            equal(len({item['id'] for item in items}),total,'跨页唯一记录数')
         return items
 
     def poll(self, read, predicate, label):
