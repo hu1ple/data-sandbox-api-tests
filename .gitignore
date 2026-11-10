@@ -1,0 +1,9 @@
+.idea/
+.vscode/
+__pycache__/
+*.py[cod]
+fixtures.local.json
+fixtures.*.local.json
+reports/
+.env
+.env.*

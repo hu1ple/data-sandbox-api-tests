@@ -1,0 +1,1586 @@
+{
+  "baseline": "后端交付-20261027",
+  "interfaces": [
+    {
+      "id": 1,
+      "route": "GET /auth/csrf",
+      "module": "认证与账号"
+    },
+    {
+      "id": 2,
+      "route": "POST /auth/dev-login",
+      "module": "认证与账号"
+    },
+    {
+      "id": 3,
+      "route": "POST /auth/logout",
+      "module": "认证与账号"
+    },
+    {
+      "id": 4,
+      "route": "GET /me",
+      "module": "认证与账号"
+    },
+    {
+      "id": 5,
+      "route": "POST /account-requests",
+      "module": "认证与账号"
+    },
+    {
+      "id": 6,
+      "route": "GET /projects",
+      "module": "元数据"
+    },
+    {
+      "id": 7,
+      "route": "GET /resource-flavors",
+      "module": "元数据"
+    },
+    {
+      "id": 8,
+      "route": "GET /engine-images",
+      "module": "元数据"
+    },
+    {
+      "id": 9,
+      "route": "GET /sandboxes",
+      "module": "沙箱"
+    },
+    {
+      "id": 10,
+      "route": "GET /sandboxes/{sandboxId}",
+      "module": "沙箱"
+    },
+    {
+      "id": 11,
+      "route": "GET /sandboxes/{sandboxId}/status",
+      "module": "沙箱"
+    },
+    {
+      "id": 12,
+      "route": "POST /sandboxes",
+      "module": "沙箱"
+    },
+    {
+      "id": 13,
+      "route": "POST /sandboxes/{sandboxId}/environments/{envId}/actions",
+      "module": "沙箱"
+    },
+    {
+      "id": 14,
+      "route": "GET /sandboxes/{sandboxId}/members",
+      "module": "沙箱"
+    },
+    {
+      "id": 15,
+      "route": "POST /sandboxes/{sandboxId}/member-requests",
+      "module": "沙箱"
+    },
+    {
+      "id": 16,
+      "route": "GET /sandboxes/{sandboxId}/member-requests",
+      "module": "沙箱"
+    },
+    {
+      "id": 17,
+      "route": "DELETE /sandboxes/{sandboxId}/members/{memberId}",
+      "module": "沙箱"
+    },
+    {
+      "id": 18,
+      "route": "GET /tasks",
+      "module": "任务"
+    },
+    {
+      "id": 19,
+      "route": "GET /tasks/{taskId}",
+      "module": "任务"
+    },
+    {
+      "id": 20,
+      "route": "GET /audit-logs",
+      "module": "日志与安全"
+    },
+    {
+      "id": 21,
+      "route": "GET /violations",
+      "module": "日志与安全"
+    },
+    {
+      "id": 22,
+      "route": "POST /violations/{id}/handle",
+      "module": "日志与安全"
+    },
+    {
+      "id": 23,
+      "route": "GET /integrations",
+      "module": "对接管理"
+    },
+    {
+      "id": 24,
+      "route": "GET /integrations/exceptions",
+      "module": "对接管理"
+    },
+    {
+      "id": 25,
+      "route": "POST /integrations/exceptions/{id}/retry",
+      "module": "对接管理"
+    },
+    {
+      "id": 26,
+      "route": "GET /settings",
+      "module": "平台配置"
+    },
+    {
+      "id": 27,
+      "route": "PUT /settings",
+      "module": "平台配置"
+    },
+    {
+      "id": 28,
+      "route": "GET /operations/{operationId}",
+      "module": "操作"
+    },
+    {
+      "id": 29,
+      "route": "GET /approvals",
+      "module": "审批中心"
+    },
+    {
+      "id": 30,
+      "route": "POST /approvals/{approvalId}/decisions",
+      "module": "审批中心"
+    },
+    {
+      "id": 31,
+      "route": "GET /data-resources",
+      "module": "数据链"
+    },
+    {
+      "id": 32,
+      "route": "GET /data-sources",
+      "module": "数据链"
+    },
+    {
+      "id": 33,
+      "route": "POST /file-upload-sessions",
+      "module": "数据链"
+    },
+    {
+      "id": 34,
+      "route": "POST /data-requests",
+      "module": "数据链"
+    },
+    {
+      "id": 35,
+      "route": "GET /ingestions",
+      "module": "数据链"
+    },
+    {
+      "id": 36,
+      "route": "POST /ingestions/{ingestionId}/retry",
+      "module": "数据链"
+    },
+    {
+      "id": 37,
+      "route": "GET /environments/{environmentId}/datasets",
+      "module": "数据链"
+    },
+    {
+      "id": 38,
+      "route": "GET /results",
+      "module": "出箱"
+    },
+    {
+      "id": 39,
+      "route": "POST /exports",
+      "module": "出箱"
+    },
+    {
+      "id": 40,
+      "route": "GET /exports",
+      "module": "出箱"
+    },
+    {
+      "id": 41,
+      "route": "POST /exports/{exportId}/download-grants",
+      "module": "出箱"
+    },
+    {
+      "id": 42,
+      "route": "POST /exports/{exportId}/deliveries/retry",
+      "module": "出箱"
+    },
+    {
+      "id": 43,
+      "route": "POST /exports/{exportId}/decisions",
+      "module": "出箱"
+    }
+  ],
+  "cases": [
+    {
+      "id": "TC-01-01",
+      "api": 1,
+      "priority": "P0",
+      "title": "匿名会话获取 CSRF 凭据",
+      "pre": "清空 Cookie，开发期登录已启用",
+      "data": "无",
+      "steps": "直接请求接口，记录 Cookie 和 data.csrfToken。用同一会话和该 Token 走登录正例。",
+      "expect": "200，data.csrfToken 为非空字符串。该 Token 可用于同一会话的登录请求。",
+      "g": ""
+    },
+    {
+      "id": "TC-01-02",
+      "api": 1,
+      "priority": "P0",
+      "title": "写接口拒绝缺失或无效的 CSRF 凭据",
+      "pre": "M 已登录并具备配置权限，已备份配置",
+      "data": "基准配置，仅改变 defaultSandboxDays 为 45。分别省略 Token、使用 bogus、使用 A 的 Token",
+      "steps": "对 PUT /settings 分别发送三组请求，使用 M 的 Cookie。每次 GET /settings 对比四个配置字段与 updatedAt。",
+      "expect": "403，错误体 code 含 CSRF，message 为中文，requestId 非空。三次配置均无变化。",
+      "g": ""
+    },
+    {
+      "id": "TC-01-03",
+      "api": 1,
+      "priority": "P1",
+      "title": "前端收到 CSRF 失效后的恢复",
+      "pre": "真实联调前端，已有登录会话和缓存 Token，可定向让旧 Token 失效",
+      "data": "使用配置或独立测试写操作",
+      "steps": "触发写请求，保留网络日志。观察 403 后同一次点击是否重新获取 Token 并重发，再手动提交观察取 Token 行为。",
+      "expect": "已明确前端应清除失效缓存并重新获取。自动重发次数以 G-07 确认为准，记录请求顺序。",
+      "g": "?G-07"
+    },
+    {
+      "id": "TC-02-01",
+      "api": 2,
+      "priority": "P0",
+      "title": "分析员和管理员登录",
+      "pre": "开发期登录在测试环境启用，A 与 M 账号可用",
+      "data": "分别用 A、M 的有效账号和密码",
+      "steps": "以两个独立 Cookie 容器取 Token 并登录，再各自请求 GET /me。",
+      "expect": "200，User 含字符串 id、displayName、organizationId、roles、permissions、UTC sessionExpiresAt。会话可访问 /me，两端返回的用户与权限对应各自账号。",
+      "g": ""
+    },
+    {
+      "id": "TC-02-02",
+      "api": 2,
+      "priority": "P0",
+      "title": "错误凭据不创建会话",
+      "pre": "未登录，匿名 Token 有效",
+      "data": "有效账号配错误密码，另测不存在账号配非空密码",
+      "steps": "分别登录，每组使用独立 Cookie 容器。再请求 GET /me。",
+      "expect": "登录返回 401 INVALID_CREDENTIALS，随后 /me 为 401。错误体含中文 message 和 requestId。",
+      "g": ""
+    },
+    {
+      "id": "TC-02-03",
+      "api": 2,
+      "priority": "P1",
+      "title": "登录字段非空",
+      "pre": "未登录，匿名 Token 有效",
+      "data": "分别置 username=\"\"、password=\"\"，另一字段保持有效",
+      "steps": "分别提交并查询 /me。",
+      "expect": "未建立已认证会话。参数错误与凭据错误的区分按 G-20 确认。",
+      "g": "G-20"
+    },
+    {
+      "id": "TC-03-01",
+      "api": 3,
+      "priority": "P0",
+      "title": "退出后旧会话失效",
+      "pre": "A 已登录，当前 /me 返回 A",
+      "data": "退出前复制 Cookie 供复查",
+      "steps": "带 Token 退出，分别以当前 Cookie 和退出前 Cookie 查询 /me。前端从页头退出并观察页面。",
+      "expect": "退出成功，无业务数据。两份旧会话均不可访问 /me，返回 401 UNAUTHENTICATED。前端清 sessionStorage 并返回登录页。",
+      "g": "G-16"
+    },
+    {
+      "id": "TC-04-01",
+      "api": 4,
+      "priority": "P0",
+      "title": "按权限点识别分析员和管理员",
+      "pre": "分别以 A、M 登录",
+      "data": "A=ANALYST，M=PLATFORM_ADMIN",
+      "steps": "请求 /me 并对照执行说明中的权限。打开真实联调前端并查看沙箱、出箱和管理菜单。",
+      "expect": "返回两种角色及其权限数组。A 有沙箱、数据和出箱申请权限，审批与配置等管理入口只对有对应权限的 M 显示。",
+      "g": "G-13"
+    },
+    {
+      "id": "TC-04-02",
+      "api": 4,
+      "priority": "P0",
+      "title": "无会话或过期会话被拒绝",
+      "pre": "准备一个新容器和一个已过期的 A 会话",
+      "data": "无 Cookie、过期 Cookie",
+      "steps": "分别请求 /me。用过期会话刷新前端受保护页面。",
+      "expect": "两个请求均为 401 UNAUTHENTICATED。错误体无业务数据。前端清理会话并跳登录页。",
+      "g": ""
+    },
+    {
+      "id": "TC-04-03",
+      "api": 4,
+      "priority": "P1",
+      "title": "角色相同但权限点不同的界面回归",
+      "pre": "可用代理替换登录及 /me 响应，使用隔离会话",
+      "data": "角色均为 ANALYST。对照组含 result:export，试验组去除该点",
+      "steps": "分别启动两个独立前端会话，进入沙箱及出箱菜单。",
+      "expect": "出箱申请和记录入口只在有 result:export 的组显示。两组仍保留其已有的沙箱入口。",
+      "g": ""
+    },
+    {
+      "id": "TC-05-01",
+      "api": 5,
+      "priority": "P0",
+      "title": "游客申请开通账号",
+      "pre": "接口已部署，匿名 CSRF 可用，申请账号从未开通过",
+      "data": "ACCT 基准，联系方式分别用 qa.user@example.test 和 13800138000",
+      "steps": "在两次独立数据准备中提交。管理员实际开通前尝试用申请账号开发期登录。",
+      "expect": "200，data.requestId、PENDING、UTC submittedAt 齐全。两次申请均仅受理，账号在开通前不可登录。",
+      "g": "G-05"
+    },
+    {
+      "id": "TC-05-02",
+      "api": 5,
+      "priority": "P1",
+      "title": "账号格式与长度边界",
+      "pre": "接口已部署，使用未占用账号和匿名 Token",
+      "data": "account 独立变体为 A._-、A×30、A×3、A×31、qa@01、测qa01",
+      "steps": "每次替换 ACCT 的 account 并提交，合法变体使用独立记录。",
+      "expect": "4 位和 30 位合法字符返回 200 和 PENDING。其余变体 400 并指出 account，不产生受理单。",
+      "g": ""
+    },
+    {
+      "id": "TC-05-03",
+      "api": 5,
+      "priority": "P1",
+      "title": "联系方式、申请理由和组织校验",
+      "pre": "接口已部署，匿名 Token 可用",
+      "data": "ACCT 单字段变体。contact=1380013800、qa@local。purpose=测×9/10/300/301。organization=\"\"",
+      "steps": "各组分别提交，成功变体使用不同未占用账号。",
+      "expect": "理由 10/300 字且其余字段有效时受理。无效联系、9/301 字理由、空组织均 400 并指出字段。",
+      "g": ""
+    },
+    {
+      "id": "TC-05-04",
+      "api": 5,
+      "priority": "P1",
+      "title": "单字姓名的受理口径",
+      "pre": "接口已部署，匿名 Token 可用",
+      "data": "ACCT，displayName 分别为 王、王晓",
+      "steps": "用两个未占用账号分别提交，并对照页面是否放行。",
+      "expect": "双字有效姓名可受理。单字姓名记录页面和接口结果，按 G-04 确认后判定。",
+      "g": "?G-04"
+    },
+    {
+      "id": "TC-05-05",
+      "api": 5,
+      "priority": "P1",
+      "title": "已存在账号的申请",
+      "pre": "接口已部署，A 已存在",
+      "data": "ACCT 的 account 换成 A 的实际登录名",
+      "steps": "匿名提交后确认 A 原凭据仍可登录。",
+      "expect": "400，未改变 A 的账号与登录状态。ACCOUNT_DUPLICATED 为建议码，记录实际 code。",
+      "g": "G-05"
+    },
+    {
+      "id": "TC-06-01",
+      "api": 6,
+      "priority": "P0",
+      "title": "项目可用列表仅包含已放行且未占用项目",
+      "pre": "A 有可见的待审、驳回、已放行未占用和已放行已占用各一条",
+      "data": "共同关键词 QA项目，page=1，pageSize=20",
+      "steps": "查询列表并用基线 ID 逐一比对。再用不匹配的唯一关键词查询。",
+      "expect": "200，PageResult。匹配组只包含已放行未占用项目。items 含 id、name、allowedActions 及适用的 authorizationExpiresAt。不匹配时 items=[]、total=0。",
+      "g": ""
+    },
+    {
+      "id": "TC-07-01",
+      "api": 7,
+      "priority": "P1",
+      "title": "按项目读取可选规格",
+      "pre": "A 可见 P_FREE 和另一个有不同规格的可建项目",
+      "data": "projectId 分别为两个项目的实际 ID",
+      "steps": "分别查询并对照测试环境配置。",
+      "expect": "200，data.items 为数组。每项 id、name、cpuCores、memoryMiB、storageGiB 与该项目的预置规格一致。",
+      "g": ""
+    },
+    {
+      "id": "TC-08-01",
+      "api": 8,
+      "priority": "P1",
+      "title": "镜像按环境类型过滤",
+      "pre": "有 DEBUG 和 PRODUCTION 各至少一条镜像",
+      "data": "environmentType=DEBUG、PRODUCTION",
+      "steps": "分别查询，逐条核对镜像类型和测试配置。",
+      "expect": "200，data.items 只含对应类型。id、name、version、environmentType 和 tools 与预置值一致。",
+      "g": ""
+    },
+    {
+      "id": "TC-09-01",
+      "api": 9,
+      "priority": "P1",
+      "title": "沙箱分页和组合筛选",
+      "pre": "A 至少可见 3 个沙箱，可按名称、项目、生命周期区分",
+      "data": "page=1/2，pageSize=2。另测 keyword=QA沙箱、projectId=S_OWN 的项目 ID、lifecycleStatus=ACTIVE",
+      "steps": "在固定数据下读取两页，再提交组合筛选和无匹配筛选。",
+      "expect": "200，页码和总数准确，前两页无重复，组合结果符合三个条件。空结果仍为 PageResult。返回 environments 与 allowedActions 数组。",
+      "g": ""
+    },
+    {
+      "id": "TC-09-02",
+      "api": 9,
+      "priority": "P1",
+      "title": "通用分页默认值与超出末页",
+      "pre": "A 可见至少 21 个固定沙箱",
+      "data": "省略分页参数，另请求 page=9999&pageSize=20",
+      "steps": "先读取默认页，再请求超出末页，核对总量。",
+      "expect": "省略分页时返回 page=1、pageSize=20、最多 20 条，total 为筛选后总数。末页外的响应策略待确认时仅核对结构及无其他数据。",
+      "g": "G-17"
+    },
+    {
+      "id": "TC-10-01",
+      "api": 10,
+      "priority": "P1",
+      "title": "沙箱详情含内嵌环境和版本",
+      "pre": "A 有可见 S_OWN，另备待审批的沙箱",
+      "data": "两个沙箱的实际 ID",
+      "steps": "分别查询详情，对照创建记录和环境配置。",
+      "expect": "200，返回对应项目、ownerId、approvalId、approvalStatus、approvalVersion、version、createdAt、purpose。environments 内含规格、类型、状态、运行模式及 allowedActions，待审 expiresAt 可为 null。",
+      "g": ""
+    },
+    {
+      "id": "TC-10-02",
+      "api": 10,
+      "priority": "P0",
+      "title": "不存在或不可见沙箱的详情不泄露数据",
+      "pre": "A 已登录，已知另一账号独占的 S_OTHER",
+      "data": "不存在的有效格式 ID 和 S_OTHER 的 ID",
+      "steps": "以 A 分别请求详情，检查错误体。",
+      "expect": "404 SANDBOX_NOT_FOUND，错误体无沙箱、项目或环境明细。",
+      "g": ""
+    },
+    {
+      "id": "TC-11-01",
+      "api": 11,
+      "priority": "P1",
+      "title": "沙箱状态轮询返回服务端当前状态",
+      "pre": "沙箱从 PROVISIONING 向 ACTIVE 推进，允许控速或保留事件记录",
+      "data": "该 sandboxId",
+      "steps": "约每 10 秒查询 /status 并记录。对照最终 /sandboxes/{id} 详情和环境观察。",
+      "expect": "200，sandboxId 与目标一致，approvalStatus、lifecycleStatus、environments、updatedAt 齐全。稳定后与详情一致。可控进度下可观察状态推进。",
+      "g": ""
+    },
+    {
+      "id": "TC-12-01",
+      "api": 12,
+      "priority": "P0",
+      "title": "创建沙箱只提交待审批申请",
+      "pre": "A 有 sandbox:create，P_FREE 可建且授权充足",
+      "data": "SBX 基准，一套 DEBUG 环境",
+      "steps": "提交创建后保存 sandboxId、approvalId。查详情及 GET /approvals?kind=SANDBOX_CREATE&status=PENDING。",
+      "expect": "200，返回 PENDING、REQUESTED，ownerId 对应 A。审批中心出现同 approvalId，targetId 指向该沙箱。审批前未开通环境。",
+      "g": ""
+    },
+    {
+      "id": "TC-12-02",
+      "api": 12,
+      "priority": "P1",
+      "title": "名称和用途长度上限",
+      "pre": "A 有多个隔离的可建项目",
+      "data": "SBX 单字段变体。name=\"\"、测×50/51。purpose=\"\"、测×500/501",
+      "steps": "每次使用新项目和新 key。提交并对照沙箱、审批记录。",
+      "expect": "50 字名称、500 字用途各自接受。空值和超限 400，指出字段，未创建沙箱或审批单。",
+      "g": ""
+    },
+    {
+      "id": "TC-12-03",
+      "api": 12,
+      "priority": "P1",
+      "title": "沙箱期限整数边界",
+      "pre": "A 有多个授权剩余至少 366 天的可建项目",
+      "data": "SBX 单字段 durationDays=0、1、365、366、1.5",
+      "steps": "每组使用新项目和 key 提交。",
+      "expect": "1、365 被接受并产生待审申请。0、366、1.5 返回 400，未创建沙箱或审批单。",
+      "g": ""
+    },
+    {
+      "id": "TC-12-04",
+      "api": 12,
+      "priority": "P1",
+      "title": "至少一个环境且环境必填项齐全",
+      "pre": "A 有可建项目",
+      "data": "SBX 分别改为 environments=[]、缺 flavorId、缺 imageId、type=STAGING",
+      "steps": "分别提交并查询项目与审批记录。",
+      "expect": "400，message 指出环境配置问题，无新沙箱或审批单。",
+      "g": ""
+    },
+    {
+      "id": "TC-12-05",
+      "api": 12,
+      "priority": "P0",
+      "title": "直调接口拦截已占用或未放行项目",
+      "pre": "准备已占用项目、仍待放行申请对应的不可用项目或 ID",
+      "data": "SBX 分别替换 projectId",
+      "steps": "绕过下拉直接提交。查询已有沙箱与审批数量。",
+      "expect": "两个请求均被拒绝。已有沙箱无变化，无额外审批单。已占用单次请求的具体错误码见 G-10。",
+      "g": "G-10"
+    },
+    {
+      "id": "TC-12-06",
+      "api": 12,
+      "priority": "P0",
+      "title": "申请期限不得超过项目授权到期",
+      "pre": "两个可建项目使用固定时钟，授权到期点分别为提交基准时刻后 30 天",
+      "data": "SBX，durationDays 分别 29、31",
+      "steps": "各提交一次，记录基准时刻和实际授权到期，核对审批记录。",
+      "expect": "29 天申请被接受。31 天申请被拒绝且未创建沙箱或审批。确切边界与拒绝码见 G-10。",
+      "g": "G-10"
+    },
+    {
+      "id": "TC-12-07",
+      "api": 12,
+      "priority": "P0",
+      "title": "同一项目并发创建只成功一次",
+      "pre": "A 拥有一个可用项目，基准无沙箱",
+      "data": "同 projectId，两份有效 SBX 请求，不同 name、不同 key",
+      "steps": "两个并行请求同时发出。用项目 ID 查沙箱与审批流水。",
+      "expect": "仅一笔成功，另一笔 409。该项目仅有一个沙箱和一条创建审批。",
+      "g": ""
+    },
+    {
+      "id": "TC-12-08",
+      "api": 12,
+      "priority": "P0",
+      "title": "同 key 重放沙箱申请",
+      "pre": "A 有独立可建项目",
+      "data": "原样 SBX 和同一 UUID",
+      "steps": "提交并记录首次结果，再用同一用户、路径、请求体、key 重发。",
+      "expect": "重放返回首次业务结果，sandboxId 与 approvalId 一致。只存在一个沙箱和一条审批。",
+      "g": ""
+    },
+    {
+      "id": "TC-12-09",
+      "api": 12,
+      "priority": "P1",
+      "title": "缺少幂等键时的五个写接口行为",
+      "pre": "五个写接口各有独立合法夹具和基准请求，均有有效 Token",
+      "data": "依次测试建箱、入库、加人、出箱提交、审批决定。省略 Idempotency-Key",
+      "steps": "每项只改请求头，记录首次及重放结果，并查询业务写入数。",
+      "expect": "记录拒绝或接受的实际行为和写入数量。强制性、有效期和缺键重放语义以 G-18 确认为准。",
+      "g": "?G-18"
+    },
+    {
+      "id": "TC-12-10",
+      "api": 12,
+      "priority": "P1",
+      "title": "规格与镜像必须匹配所选项目和环境类型",
+      "pre": "A 有两个规格不同的可建项目，已取 DEBUG 和 PRODUCTION 镜像",
+      "data": "SBX，分别换成另一项目专属 flavorId、PRODUCTION 专属 imageId",
+      "steps": "每次只改一项直接提交，查审批、沙箱和创建操作。",
+      "expect": "记录错配是否被拦截及其返回码，接口校验口径按 G-11 确认。",
+      "g": "?G-11"
+    },
+    {
+      "id": "TC-13-01",
+      "api": 13,
+      "priority": "P0",
+      "title": "启停已放行沙箱环境",
+      "pre": "S_OWN 已放行。STOPPED 环境允许 START，RUNNING 环境允许 STOP",
+      "data": "分两组提交 action=START 或 STOP",
+      "steps": "发起动作后记录响应，再通过 /status 或环境页轮询至稳定。环境最终恢复初始状态。",
+      "expect": "200，返回相同环境 id 的新状态。启动最终为 RUNNING，停止最终为 STOPPED。可控制进度时分别可观察 STARTING、STOPPING。",
+      "g": ""
+    },
+    {
+      "id": "TC-13-02",
+      "api": 13,
+      "priority": "P0",
+      "title": "审批放行前禁止启停",
+      "pre": "A 可见仍 REQUESTED 的沙箱且有环境记录",
+      "data": "同一环境分别用 START、STOP",
+      "steps": "在页面检查禁用或隐藏，再绕过页面分别调用并查询 /status。",
+      "expect": "请求被拒绝，环境状态保持原值，不新增启停操作。拒绝码见 G-11。",
+      "g": "G-11"
+    },
+    {
+      "id": "TC-13-03",
+      "api": 13,
+      "priority": "P1",
+      "title": "未知动作或不存在的环境",
+      "pre": "S_OWN 已放行，基准环境允许 START",
+      "data": "分别 action=RESTART、合法 START 但 envId 不存在",
+      "steps": "每次只改一项。读取状态和已有操作。",
+      "expect": "RESTART 返回 400。不存在环境返回 404 ENVIRONMENT_NOT_FOUND。均无状态变化。",
+      "g": ""
+    },
+    {
+      "id": "TC-13-04",
+      "api": 13,
+      "priority": "P0",
+      "title": "环境不能使用其他沙箱的环境 ID 操作",
+      "pre": "S_OWN 与 S_OTHER 各有 STOPPED 环境",
+      "data": "S_OWN 的 sandboxId 配 S_OTHER 的 envId，action=START",
+      "steps": "用 A 直调并请 S_OTHER 的拥有者比对其环境。",
+      "expect": "请求被拒绝，S_OTHER 环境和操作记录不变。路径错配的精确错误体见 G-11。",
+      "g": "G-11"
+    },
+    {
+      "id": "TC-13-05",
+      "api": 13,
+      "priority": "P1",
+      "title": "无效生命周期状态下不重复启停",
+      "pre": "S_OWN 已放行，准备 RUNNING 与 STOPPED 环境各一套",
+      "data": "对 RUNNING 发 START，对 STOPPED 发 STOP",
+      "steps": "分别直调并回查环境和操作流水。",
+      "expect": "状态保持且未重复触发下游启停。拒绝或幂等应答的确切口径见 G-11。",
+      "g": "?G-11"
+    },
+    {
+      "id": "TC-14-01",
+      "api": 14,
+      "priority": "P1",
+      "title": "成员列表按沙箱返回角色且保护个人信息",
+      "pre": "S_OWN 含唯一 OWNER、EDITOR、VIEWER，夹具另含手机号",
+      "data": "S_OWN 的 ID",
+      "steps": "查询成员列表，与后台测试夹具比对并检查整个响应。",
+      "expect": "200，data 为数组。id、displayName、organization、role、joinedAt 正确，OWNER 仅一条。无手机号等个人信息。",
+      "g": ""
+    },
+    {
+      "id": "TC-15-01",
+      "api": 15,
+      "priority": "P0",
+      "title": "发起加人申请后尚未加入",
+      "pre": "A 有 S_OWN 访问权，申请人尚未入组",
+      "data": "MEM 基准分别用 EDITOR、VIEWER，使用两个新姓名",
+      "steps": "提交，保存 approvalId。查本沙箱申请流水、成员列表及 M 的审批中心。",
+      "expect": "200，申请状态 PENDING。流水及审批中心含同审批 ID、成员及角色。成员列表尚无该姓名。",
+      "g": "G-03"
+    },
+    {
+      "id": "TC-15-02",
+      "api": 15,
+      "priority": "P1",
+      "title": "加人字段与角色边界",
+      "pre": "S_OWN 可申请，姓名在每组独立",
+      "data": "MEM 单字段变体。displayName=测×20/21，organization=测×50/51，reason=测×9/10/200/201，role=OWNER",
+      "steps": "每组使用独立申请或重置夹具。提交后查申请和成员列表。",
+      "expect": "20、50、10、200 的边界值各自接受并生成待审批申请。21、51、9、201 或 OWNER 返回 400。失败不新增流水或成员。",
+      "g": ""
+    },
+    {
+      "id": "TC-15-03",
+      "api": 15,
+      "priority": "P0",
+      "title": "重复待审申请与同键重放可区分",
+      "pre": "S_OWN 下无该姓名的待审申请",
+      "data": "同一份 MEM。先 K1，重放 K1，再用新 K2",
+      "steps": "依次发三次，记录 approvalId，核对本沙箱申请流水。",
+      "expect": "K1 重放返回原 approvalId。K2 返回 409 REQUEST_DUPLICATED。总共只新增一条申请。",
+      "g": ""
+    },
+    {
+      "id": "TC-16-01",
+      "api": 16,
+      "priority": "P1",
+      "title": "加人申请流水按沙箱隔离",
+      "pre": "S_OWN 有 PENDING 和已处理记录，另一可见沙箱也有申请",
+      "data": "S_OWN 的 ID",
+      "steps": "查询流水，对照两沙箱的审批单号和详情。",
+      "expect": "200，data 为数组且只含 S_OWN 申请。包含 approvalId、sandboxId、sandboxName、申请人、成员信息、状态和版本，已处理记录的意见与决定时间对应原决定。",
+      "g": ""
+    },
+    {
+      "id": "TC-17-01",
+      "api": 17,
+      "priority": "P0",
+      "title": "OWNER 或管理员移除普通成员并留审计",
+      "pre": "两套 S_OWN 各含一个 EDITOR，A 为 OWNER，M 为管理员",
+      "data": "两组分别移除各自夹具中的 EDITOR",
+      "steps": "以 A、M 各调用一次。重新查成员列表并由 M 查审计。执行后用隔离夹具还原。",
+      "expect": "成功且无业务数据。目标成员消失，其余角色保持。各有对应 actorName、target、SUCCESS、ip 的审计记录。",
+      "g": "G-16"
+    },
+    {
+      "id": "TC-17-02",
+      "api": 17,
+      "priority": "P0",
+      "title": "普通成员不能移除其他成员",
+      "pre": "E 为 S_OWN 的 EDITOR，非管理员，有目标 VIEWER",
+      "data": "目标 VIEWER 的 memberId",
+      "steps": "以 E 发起删除，A 重查成员列表。",
+      "expect": "403 FORBIDDEN，目标及其他成员都保留。",
+      "g": ""
+    },
+    {
+      "id": "TC-17-03",
+      "api": 17,
+      "priority": "P0",
+      "title": "OWNER 始终不可移除",
+      "pre": "S_OWN 存在唯一 OWNER",
+      "data": "owner 的 memberId",
+      "steps": "以 A 和 M 分别请求。各自复查成员列表。",
+      "expect": "400 OWNER_PROTECTED，原 OWNER 保留且仍唯一。",
+      "g": ""
+    },
+    {
+      "id": "TC-17-04",
+      "api": 17,
+      "priority": "P1",
+      "title": "移除不存在的成员",
+      "pre": "A 为 S_OWN 的 OWNER",
+      "data": "不存在的 memberId",
+      "steps": "请求后再次查询成员列表。",
+      "expect": "404 MEMBER_NOT_FOUND，列表不变。",
+      "g": ""
+    },
+    {
+      "id": "TC-18-01",
+      "api": 18,
+      "priority": "P1",
+      "title": "外部回写任务按沙箱、状态和关键词分页",
+      "pre": "授权可见沙箱有多条已回写或预置任务，含运行中和已结束",
+      "data": "sandboxId=S_OWN，status=RUNNING，keyword=QA，pageSize=1，另测 page=2",
+      "steps": "读取筛选页，对照任务夹具与可见沙箱范围。",
+      "expect": "200，PageResult，分页与总数吻合。sandboxName、ownerName 直接返回。运行中夹具的 finishedAt、durationSec 为 null。",
+      "g": "G-06"
+    },
+    {
+      "id": "TC-19-01",
+      "api": 19,
+      "priority": "P1",
+      "title": "任务详情返回日志并维持时间顺序",
+      "pre": "预置成功和失败任务，日志三行有可核对时间",
+      "data": "两个有效 taskId",
+      "steps": "分别查详情，比较 /tasks 同条记录和预置日志。",
+      "expect": "200，任务字段与列表一致。logs 为字符串数组，一行一条且按时间先后。成功样本 resultId 对应测试结果，失败样本有预置 failureMessage。",
+      "g": ""
+    },
+    {
+      "id": "TC-19-02",
+      "api": 19,
+      "priority": "P1",
+      "title": "查询不存在的任务",
+      "pre": "A 登录，已确认 taskId 不存在",
+      "data": "不存在的 taskId",
+      "steps": "请求详情并检查响应。",
+      "expect": "404 TASK_NOT_FOUND，错误体无任务详情。",
+      "g": ""
+    },
+    {
+      "id": "TC-20-01",
+      "api": 20,
+      "priority": "P1",
+      "title": "管理员可筛选成功与拒绝审计",
+      "pre": "已产生包含唯一目标标识的 SUCCESS 和 DENIED 日志，M 可查",
+      "data": "keyword 使用预置可匹配的目标文本，result=SUCCESS 或 DENIED，page=1，pageSize=2",
+      "steps": "以 M 分别查询，核对夹具。检查整个响应有无预置手机号等字段。",
+      "expect": "200，PageResult。返回符合结果筛选的数据，含 id、at、actorName、action、targetType、targetId、result、ip。无手机号等个人信息。",
+      "g": ""
+    },
+    {
+      "id": "TC-20-02",
+      "api": 20,
+      "priority": "P0",
+      "title": "分析员不能直读审计与违规",
+      "pre": "A 已登录且没有 audit:read",
+      "data": "GET /audit-logs、GET /violations，均 page=1，pageSize=20",
+      "steps": "用 A 直调两接口，再看前端安全菜单。",
+      "expect": "403，无审计或违规明细。安全菜单按权限点隐藏。",
+      "g": ""
+    },
+    {
+      "id": "TC-20-03",
+      "api": 20,
+      "priority": "P0",
+      "title": "关键操作落审计且主体与结果对应",
+      "pre": "七种操作各有独立夹具，M 可读审计。出箱凭证依赖可签发夹具",
+      "data": "A07、A09、A13、A14、A16、A17、A18 各一笔成功操作",
+      "steps": "记录操作者与目标 ID，再由 M 查询审计。上传实际结果时附 requestId 与匹配日志。",
+      "expect": "每种操作均有对应的 actorName、action、targetType/targetId、SUCCESS、ip。出箱签发以 G-09 约定的可执行条件准备。",
+      "g": "G-09"
+    },
+    {
+      "id": "TC-21-01",
+      "api": 21,
+      "priority": "P1",
+      "title": "违规列表按级别与状态分页",
+      "pre": "M 可查。预置 HIGH/OPEN、LOW/OPEN、HIGH/HANDLED 及相同筛选条件多条",
+      "data": "severity=HIGH，status=OPEN，page=1/2，pageSize=1",
+      "steps": "读取两页并比对夹具，再测无匹配组合。",
+      "expect": "200，只有 HIGH/OPEN 数据。分页准确，空结果仍为 PageResult。包含 sandboxName、at、type、detail，HANDLED 记录返回适用 handler。",
+      "g": ""
+    },
+    {
+      "id": "TC-22-01",
+      "api": 22,
+      "priority": "P1",
+      "title": "处理违规后回查持久化状态",
+      "pre": "M 已登录，V_OPEN 为 OPEN 且无处理人",
+      "data": "V_OPEN 的 ID",
+      "steps": "调用处理接口，再以 GET /violations?status=HANDLED 查目标。",
+      "expect": "200，目标变为 HANDLED，handler 对应 M 的用户名。刷新后保持，审计含对应记录。",
+      "g": ""
+    },
+    {
+      "id": "TC-22-02",
+      "api": 22,
+      "priority": "P1",
+      "title": "违规不存在或无处理权限",
+      "pre": "M 和 A 均登录，V_OPEN 仍为 OPEN",
+      "data": "M 使用不存在 ID，A 使用 V_OPEN",
+      "steps": "分别发起处理，M 回查 V_OPEN。",
+      "expect": "M 收到 404 VIOLATION_NOT_FOUND。A 收到 403 且无业务明细。原记录仍 OPEN。",
+      "g": ""
+    },
+    {
+      "id": "TC-23-01",
+      "api": 23,
+      "priority": "P1",
+      "title": "对接状态总览返回 D1 至 D10",
+      "pre": "M 登录，配置十项对接，包含未同步及已同步样本",
+      "data": "无参数",
+      "steps": "查询列表并按 code 比对对接夹具。",
+      "expect": "200，data.items 中 D1 至 D10 唯一且齐全。名称、描述、状态、owner 和 lastSyncAt 与夹具一致，未同步样本允许 null。",
+      "g": ""
+    },
+    {
+      "id": "TC-24-01",
+      "api": 24,
+      "priority": "P1",
+      "title": "D8 异常控制台按状态分页",
+      "pre": "M 登录，预置至少两条 OPEN 及一条 RESOLVED",
+      "data": "status=OPEN 或 RESOLVED，pageSize=1",
+      "steps": "分别查询，核对异常及重试标志。",
+      "expect": "200，PageResult 与筛选和总数一致。integrationCode、integrationName、at、code、message、status、retryable 与预置一致。",
+      "g": ""
+    },
+    {
+      "id": "TC-25-01",
+      "api": 25,
+      "priority": "P1",
+      "title": "可重试异常恢复",
+      "pre": "M 登录，异常 OPEN、retryable=true，下游恢复成功条件已准备",
+      "data": "可重试的异常 ID",
+      "steps": "发起重试，按 RESOLVED 筛选回查，并检查审计。",
+      "expect": "200，相同异常 ID，状态 RESOLVED。列表持久化为已恢复，审计有对应目标。",
+      "g": ""
+    },
+    {
+      "id": "TC-25-02",
+      "api": 25,
+      "priority": "P1",
+      "title": "不可重试或不存在的对接异常",
+      "pre": "M 登录，预置 OPEN 且 retryable=false",
+      "data": "不可重试 ID、不存在 ID",
+      "steps": "分别发起重试，随后回查原异常。",
+      "expect": "400 NOT_RETRYABLE 或 404 EXCEPTION_NOT_FOUND。原异常保持 OPEN，无成功重试。",
+      "g": ""
+    },
+    {
+      "id": "TC-25-03",
+      "api": 25,
+      "priority": "P0",
+      "title": "分析员不能调用对接管理接口",
+      "pre": "A 已登录且无 integration:manage，有已知可重试异常",
+      "data": "GET /integrations、GET /integrations/exceptions、对该 ID POST retry",
+      "steps": "用 A 分别直调，M 回查目标异常。",
+      "expect": "三次均 403。无对接或异常明细，目标异常状态不变。",
+      "g": ""
+    },
+    {
+      "id": "TC-26-01",
+      "api": 26,
+      "priority": "P1",
+      "title": "读取平台配置并限制管理权限",
+      "pre": "M、A 登录。已预置配置",
+      "data": "使用两人各自会话",
+      "steps": "分别 GET /settings，并比对 M 的值。",
+      "expect": "M 返回 200，四个配置字段类型分别为 number、boolean、number、boolean，updatedAt 为 UTC。A 返回 403，无配置明细。",
+      "g": ""
+    },
+    {
+      "id": "TC-27-01",
+      "api": 27,
+      "priority": "P0",
+      "title": "保存配置并在新会话中复查",
+      "pre": "M 登录，独占测试配置并已备份",
+      "data": "CFG 基准。四个值均设为与当前基线不同且有效的值",
+      "steps": "PUT 保存，换会话 GET，对照四个字段和 updatedAt。执行后 PUT 还原并 GET 确认。",
+      "expect": "200，回显四个配置字段与请求一致，updatedAt 反映本次更新。重新读取值一致，并有成功审计。",
+      "g": ""
+    },
+    {
+      "id": "TC-27-02",
+      "api": 27,
+      "priority": "P1",
+      "title": "保留天数边界与布尔类型",
+      "pre": "M 已备份配置",
+      "data": "CFG 单字段变体。retentionDays=0、1、3650、3651、1.5。两个开关各用字符串 \"false\" 或省略",
+      "steps": "逐组 PUT 后 GET。无效组先记录有效基线，执行后还原。",
+      "expect": "1、3650 接受并可读回。0、3651、1.5、非布尔值或缺必填项返回 400，指出字段，配置不变。",
+      "g": ""
+    },
+    {
+      "id": "TC-27-03",
+      "api": 27,
+      "priority": "P1",
+      "title": "默认沙箱期限的共同边界及页面生效",
+      "pre": "M 已备份，A 可新建沙箱",
+      "data": "CFG，defaultSandboxDays=7、90、0、366、7.5",
+      "steps": "分别保存和 GET。对 7 与 90，各重新进入新建沙箱页观察初值。执行后还原。",
+      "expect": "7、90 保存成功且 GET 读回一致。0、366、7.5 均返回 400，拒绝后配置不变。按 A18 另核对新建页初值，记录交付版页面与契约的差异。",
+      "g": "G-01"
+    },
+    {
+      "id": "TC-27-04",
+      "api": 27,
+      "priority": "P1",
+      "title": "默认沙箱期限的分歧区间",
+      "pre": "M 已备份配置",
+      "data": "CFG，defaultSandboxDays=1、6、91、365",
+      "steps": "分别 PUT 并 GET 记录保存前后值，对照前端输入范围。执行后还原。",
+      "expect": "记录每组 HTTP、code 与配置前后值。放行区间以 G-01 确认为准。",
+      "g": "?G-01"
+    },
+    {
+      "id": "TC-27-05",
+      "api": 27,
+      "priority": "P0",
+      "title": "无配置权限不能写入",
+      "pre": "A 已登录且无 settings:manage，M 已记录初始配置",
+      "data": "有效 CFG，改变 defaultSandboxDays",
+      "steps": "A 使用本人 Token PUT，M 再 GET。",
+      "expect": "403，四个配置字段与更新时间均不变。",
+      "g": ""
+    },
+    {
+      "id": "TC-27-06",
+      "api": 27,
+      "priority": "P1",
+      "title": "配置项对实际保留、审批和水印的影响",
+      "pre": "专用联调环境可控时间，并可接收测试导出文件。已备份配置",
+      "data": "分别设置 retentionDays=1、exportApprovalRequired=false、watermarkEnabled=true/false",
+      "steps": "独立准备超期与未超期的日志和结果、提交测试出箱、生成水印开关两组文件。执行后还原配置。",
+      "expect": "核对开关实际效果和过期数据处理，保留样本、状态与文件。清理、跳过状态、水印规范按 G-12 判定。",
+      "g": "!G-12"
+    },
+    {
+      "id": "TC-28-01",
+      "api": 28,
+      "priority": "P1",
+      "title": "轮询操作时状态与目标环境一致",
+      "pre": "通过沙箱审批/启停获得 operationId，或已预置同结构操作",
+      "data": "同一 operationId，准备成功和失败样本",
+      "steps": "查询操作直至终态，并对照沙箱 /status。",
+      "expect": "200，id、sandboxId、适用 environmentId、type、status、phase、updatedAt、runtimeMode 与目标一致。失败样本返回配置的 failureCode 和 failureMessage。",
+      "g": ""
+    },
+    {
+      "id": "TC-29-01",
+      "api": 29,
+      "priority": "P0",
+      "title": "审批中心汇总三类申请及正确的目标 ID",
+      "pre": "M 已登录，A 提交入库、建箱、加人各一笔",
+      "data": "GET /approvals?status=PENDING&page=1&pageSize=20",
+      "steps": "查询待办，记录各申请单。对照各提交接口和目标沙箱 ID。",
+      "expect": "200，三类均以 ApprovalDetail 返回。入库 targetId 等于自身 approvalId，建箱和加人的 targetId 等于沙箱 ID。标题、摘要、申请人、详情、version 与夹具匹配。",
+      "g": "G-02,G-03"
+    },
+    {
+      "id": "TC-29-02",
+      "api": 29,
+      "priority": "P1",
+      "title": "审批可按类型、状态与关键词筛选",
+      "pre": "M 登录，已预置同关键词的不同 kind 和状态",
+      "data": "kind=MEMBER_ADD，status=APPROVED，keyword=QA，pageSize=1",
+      "steps": "分别查询第一页、第二页及不匹配关键词。",
+      "expect": "200，匹配数据都为已通过的加人审批，已处理记录包含实际意见和决定时间。总数与筛选结果一致。",
+      "g": "G-02"
+    },
+    {
+      "id": "TC-29-03",
+      "api": 29,
+      "priority": "P0",
+      "title": "分析员不能查审批待办或提交决定",
+      "pre": "A 无 approval:read 和 approval:decide，已知 M 看到的一个待审 ID 和版本",
+      "data": "GET /approvals 和一份有效 APPROVE 请求",
+      "steps": "A 分别直调，M 回查待办和关联资源。",
+      "expect": "两次均 403，无审批明细、版本变更或审批副作用。",
+      "g": ""
+    },
+    {
+      "id": "TC-30-01",
+      "api": 30,
+      "priority": "P0",
+      "title": "通过数据入库审批后建立项目",
+      "pre": "A 已提交 EXT 且目标未存在，M 有待审单版本",
+      "data": "APPROVE，comment=\"同意入库\"，expectedVersion=读取值，新 UUID",
+      "steps": "M 审批。重新查历史及 A 的 /projects，记录新 projectId。",
+      "expect": "200，DecisionResult 为 APPROVED，版本更新。审批转入已处理，项目出现且名等于提交项目名。",
+      "g": ""
+    },
+    {
+      "id": "TC-30-02",
+      "api": 30,
+      "priority": "P0",
+      "title": "驳回数据入库审批不建立项目",
+      "pre": "入库申请 PENDING，项目未存在，M 已读版本",
+      "data": "REJECT，comment=\"来源口径需补充\"，expectedVersion=当前值",
+      "steps": "M 驳回后查已拒绝历史和 /projects。",
+      "expect": "200，审批 REJECTED、版本更新，回查意见一致。目标项目未建立。",
+      "g": ""
+    },
+    {
+      "id": "TC-30-03",
+      "api": 30,
+      "priority": "P0",
+      "title": "通过建箱审批并开通环境",
+      "pre": "SBX 已提交，P_FREE 对应项目授权充足，环境开通依赖可用",
+      "data": "M 提交 APPROVE、有效意见、当前版本",
+      "steps": "审批后轮询 /status 和已提供的 operationId。查详情和 /projects。",
+      "expect": "200，审批 APPROVED。沙箱进入 PROVISIONING，环境创建，按申请天数设置 expiresAt。开通成功后沙箱 ACTIVE，项目不再可用于新建。",
+      "g": "G-10"
+    },
+    {
+      "id": "TC-30-04",
+      "api": 30,
+      "priority": "P0",
+      "title": "驳回建箱审批后环境不启用",
+      "pre": "M 已读待审沙箱审批版本，含至少一套环境",
+      "data": "REJECT，comment=\"用途需调整\"，expectedVersion=当前值",
+      "steps": "驳回，查审批历史及沙箱详情和状态。",
+      "expect": "200，审批及沙箱生命周期 REJECTED，环境 TERMINATED。无运行中的环境。",
+      "g": ""
+    },
+    {
+      "id": "TC-30-05",
+      "api": 30,
+      "priority": "P0",
+      "title": "通过加人审批才写入成员",
+      "pre": "MEM 已提交且状态 PENDING，成员列表尚无目标人",
+      "data": "APPROVE、当前版本、comment=\"确认加入\"",
+      "steps": "M 审批。查沙箱成员和申请流水，对照同一 approvalId。",
+      "expect": "200，流水变为 APPROVED，新成员只出现一次，姓名、组织和申请角色一致，原 OWNER 仍唯一。",
+      "g": "G-03"
+    },
+    {
+      "id": "TC-30-06",
+      "api": 30,
+      "priority": "P0",
+      "title": "驳回加人申请不产生成员",
+      "pre": "MEM 已提交且目标人未入组",
+      "data": "REJECT、当前版本、comment=\"申请理由不足\"",
+      "steps": "M 审批后查流水和成员。",
+      "expect": "200，流水 REJECTED 并显示意见，成员列表不新增该人。",
+      "g": "G-03"
+    },
+    {
+      "id": "TC-30-07",
+      "api": 30,
+      "priority": "P0",
+      "title": "待审单拒绝过期版本",
+      "pre": "PENDING，当前版本 v，准备合法 Token 与审批人",
+      "data": "APPROVE，expectedVersion=v-1，合法意见，新 UUID",
+      "steps": "提交旧版本后，查审批、项目或成员原状态。",
+      "expect": "409 VERSION_CONFLICT，审批仍 PENDING 且版本为 v，无对应审批副作用。",
+      "g": ""
+    },
+    {
+      "id": "TC-30-08",
+      "api": 30,
+      "priority": "P0",
+      "title": "已决定的审批不允许新决定",
+      "pre": "目标审批已 APPROVED，M 已读处理后的版本",
+      "data": "REJECT、处理后版本、合法意见，使用新 UUID",
+      "steps": "提交，再查历史及关联业务对象。",
+      "expect": "409 APPROVAL_ALREADY_DECIDED。状态、版本、原意见及原副作用均保持。",
+      "g": ""
+    },
+    {
+      "id": "TC-30-09",
+      "api": 30,
+      "priority": "P0",
+      "title": "同一审批决定重放返回首次结果",
+      "pre": "待审入库单，M 有合法审批权限",
+      "data": "APPROVE、当前版本、合法意见、K1",
+      "steps": "发一次再原样重发。查结果项目、审批历史及成功审计。",
+      "expect": "重放返回首次审批结果，approvalId、status、version 一致。只创建一个项目，不重复写成功决定流水。",
+      "g": ""
+    },
+    {
+      "id": "TC-30-10",
+      "api": 30,
+      "priority": "P0",
+      "title": "两位管理员并发审批只产生一次决定",
+      "pre": "M 与 M2 同时读取同一待审入库单版本 v",
+      "data": "M 发 APPROVE，M2 发 REJECT。合法意见、同版本 v、不同 key",
+      "steps": "同时发送并保存两个响应。查询最终审批状态、历史和 /projects。",
+      "expect": "一笔成功，一笔 409。最终状态匹配胜出决定，审批只生效一次。通过时建立一个项目，驳回时没有项目。两个 409 业务码的判定顺序见 G-14。",
+      "g": "G-14"
+    },
+    {
+      "id": "TC-30-11",
+      "api": 30,
+      "priority": "P1",
+      "title": "驳回意见校验与审批必填字段",
+      "pre": "M 已登录，每组有独立 PENDING 记录",
+      "data": "REJECT 的 comment 省略、空串、测×200、测×201。另测 decision=RETURN、expectedVersion 省略",
+      "steps": "每组用新 key，提交后读状态及版本。",
+      "expect": "200 字意见可驳回。空、缺失、超长意见及非法决定或缺版本返回 400。失败记录仍待审且版本不变。",
+      "g": ""
+    },
+    {
+      "id": "TC-30-12",
+      "api": 30,
+      "priority": "P1",
+      "title": "审批单不存在",
+      "pre": "M 已登录且有 approval:decide",
+      "data": "不存在的 approvalId，合法审批请求",
+      "steps": "调用决定接口，检查错误响应。",
+      "expect": "404 APPROVAL_NOT_FOUND，无决定成功或业务副作用。",
+      "g": ""
+    },
+    {
+      "id": "TC-30-13",
+      "api": 30,
+      "priority": "P1",
+      "title": "通过时省略意见及本人审批规则",
+      "pre": "M 有独立待审单，自提和他提各至少一条",
+      "data": "他提单 APPROVE 省略 comment，对照使用 comment=\"\"。自提单带合法意见",
+      "steps": "按组提交，记录页面请求体、响应和审批状态。",
+      "expect": "记录省略与空串差异以及本人审批结果，按 G-14 确认后判定。",
+      "g": "?G-14"
+    },
+    {
+      "id": "TC-30-14",
+      "api": 30,
+      "priority": "P0",
+      "title": "外部数据申请到开通环境的联调串测",
+      "pre": "A、M 各有独立 Cookie。SRC_OK、镜像、规格及开通依赖可用",
+      "data": "新 EXT，再使用刚获授权项目填 SBX，选 DEBUG 和 PRODUCTION 各一套",
+      "steps": "① A 提交 EXT，M 通过。② A 选新项目创建沙箱，M 通过。③ 轮询到 ACTIVE 后对 DEBUG 先 STOP 再 START。",
+      "expect": "① 项目仅在入库通过后可选。② 建箱通过后内嵌两套对应环境，项目从可建下拉消失。③ DEBUG 最终恢复 RUNNING，PRODUCTION 状态不受影响。",
+      "g": "G-02,G-10"
+    },
+    {
+      "id": "TC-30-15",
+      "api": 30,
+      "priority": "P1",
+      "title": "成员批准后移除的联调串测",
+      "pre": "A 是 S_OWN 的 OWNER，M 可审批，测试成员尚未入组",
+      "data": "MEM，role=VIEWER，使用新姓名",
+      "steps": "① A 提交加人，查成员。② M 通过，A 查成员并取 memberId。③ A 移除，M 查审计。",
+      "expect": "① 待审时无成员。② 仅新增一名 VIEWER。③ 该成员消失，原 OWNER 保留，审批与移除审计可按目标核对。",
+      "g": "G-03"
+    },
+    {
+      "id": "TC-31-01",
+      "api": 31,
+      "priority": "P1",
+      "title": "授权资源目录分页返回授权状态",
+      "pre": "A 有可见资源夹具，至少包含已授权与到期样本",
+      "data": "keyword=QA资源，page=1/2，pageSize=1",
+      "steps": "查询两页并对照授权夹具。另测无匹配词。",
+      "expect": "200，PageResult。id、name、authorizationStatus、authorizationExpiresAt 与预置一致，allowedActions 为数组。无匹配时 total=0、items=[]。",
+      "g": "G-17"
+    },
+    {
+      "id": "TC-32-01",
+      "api": 32,
+      "priority": "P0",
+      "title": "数据源目录保留离线记录且不泄露凭据",
+      "pre": "数据源夹具有 CONNECTED、DEGRADED、DISCONNECTED，含仅供测试的连接串、账号和密码",
+      "data": "GET /data-sources，无查询参数",
+      "steps": "读取完整响应，搜索凭据的键和值。在数据申请页面核对三种数据源的可选性。",
+      "expect": "200，data.items 含三种状态及 id、name、type、description。无连接串、账号、密码等敏感值。DISCONNECTED 可见但不可选。",
+      "g": ""
+    },
+    {
+      "id": "TC-33-01",
+      "api": 33,
+      "priority": "P1",
+      "title": "真实模式中未冻结上传入口的提示",
+      "pre": "交付版前端切真实模式，A 打开文件上传方式",
+      "data": "有效 qa.csv，内容 id 换行 1",
+      "steps": "选择文件并观察提示和网络请求。尝试提交文件方式入库。",
+      "expect": "该交付版提示文件上传接口尚未冻结，未发出创建上传会话请求。未上传成功时页面不提交文件入库。",
+      "g": "G-08"
+    },
+    {
+      "id": "TC-33-02",
+      "api": 33,
+      "priority": "P1",
+      "title": "上传会话格式、大小和返回字段",
+      "pre": "DATA06–DATA08 已冻结并部署。按冻结契约准备可传输文件",
+      "data": ".csv/.xlsx/.zip/.json、.exe、0 字节，及确认上限 N 的 N-1/N/N+1 字节",
+      "steps": "按确认流程创建会话并分块/完成，记录上传及服务端校验。",
+      "expect": "冻结后核对格式白名单、空文件、大小边界、INVALID_FILE 及 READY 时机。核对 uploadId、fileName、sizeBytes、checksum、createdAt。以 G-08 结论判定。",
+      "g": "!G-08"
+    },
+    {
+      "id": "TC-34-01",
+      "api": 34,
+      "priority": "P0",
+      "title": "外部同步只建审批单不提前建项目",
+      "pre": "A 有 data:use，SRC_OK 在线，项目名唯一",
+      "data": "EXT 基准，projectName 两端各加 2 个空格",
+      "steps": "提交并保存 approvalId，审批前分别查 M 的待办与 A 的项目列表。",
+      "expect": "200，approvalStatus=PENDING，返回审批单号、updatedAt，未生成 projectId。待办标题为去首尾空格后的项目名，项目尚未出现在可建列表。",
+      "g": ""
+    },
+    {
+      "id": "TC-34-02",
+      "api": 34,
+      "priority": "P1",
+      "title": "降级数据源允许外部同步申请",
+      "pre": "A 有 data:use，数据源状态 DEGRADED 且存在",
+      "data": "EXT 仅换成 SRC_WARN，使用新项目名",
+      "steps": "用实际 sourceId 提交并查待审批列表。",
+      "expect": "200，生成 PENDING 审批。数据源规则排除 DISCONNECTED，降级记录仍可选用。",
+      "g": ""
+    },
+    {
+      "id": "TC-34-03",
+      "api": 34,
+      "priority": "P0",
+      "title": "外部同步拒绝无效或离线数据源",
+      "pre": "A 有 data:use，M 可查审批",
+      "data": "EXT 单字段变体。sourceId 缺失、不存在、SRC_OFF",
+      "steps": "分别用新 key 提交，记录三个项目名，查询待办和项目。",
+      "expect": "各组 400 INVALID_SOURCE，无新审批单和项目。",
+      "g": ""
+    },
+    {
+      "id": "TC-34-04",
+      "api": 34,
+      "priority": "P1",
+      "title": "入库项目名长度与接入方式校验",
+      "pre": "A 登录，SRC_OK 可用",
+      "data": "EXT 单字段变体。projectName=测×1/2/40/41、两个空格。accessMode=HTTP",
+      "steps": "独立数据或每组重置，提交后查待办。",
+      "expect": "2、40 字接受，生成待审。1、41、全空格及非法接入方式返回 400，未建审批单。",
+      "g": ""
+    },
+    {
+      "id": "TC-34-05",
+      "api": 34,
+      "priority": "P1",
+      "title": "入库说明上限及缺失字段",
+      "pre": "A 登录，SRC_OK 可用",
+      "data": "EXT 的 dataSource、purpose 分开测试。各取缺失、空串、测×10/500/501",
+      "steps": "每次只替换一字段并更换项目名和 key。查审批结果。",
+      "expect": "10/500 字接受。缺失、空串、501 字返回 400，指出字段，拒绝组无新审批。",
+      "g": ""
+    },
+    {
+      "id": "TC-34-06",
+      "api": 34,
+      "priority": "P1",
+      "title": "入库说明最短长度的分歧",
+      "pre": "A 登录，SRC_OK 可用",
+      "data": "EXT 的 dataSource、purpose 分开置为 测×1、测×9，另以测×10 对照",
+      "steps": "每组提交并保留页面与接口响应。",
+      "expect": "10 字接受。1/9 字的结果按 G-15 确认后判定。",
+      "g": "?G-15"
+    },
+    {
+      "id": "TC-34-07",
+      "api": 34,
+      "priority": "P0",
+      "title": "入库请求同 key 重放",
+      "pre": "A 有有效 EXT，唯一项目名",
+      "data": "原请求和同一 UUID",
+      "steps": "提交后原样重放，查询待办并按项目名核对数量。",
+      "expect": "两次返回同 approvalId，始终仅一条 PENDING 申请，未提前建立项目。",
+      "g": ""
+    },
+    {
+      "id": "TC-34-08",
+      "api": 34,
+      "priority": "P1",
+      "title": "同 key 改入参的冲突",
+      "pre": "A 已提交 EXT 并取得首次结果",
+      "data": "复用 K1，仅将用途改成另一条有效用途",
+      "steps": "发送变更后请求，对比原审批及新增记录。",
+      "expect": "409。不得覆盖原用途或创建第二条申请。业务码与键保留见 G-18。",
+      "g": "G-18"
+    },
+    {
+      "id": "TC-34-09",
+      "api": 34,
+      "priority": "P1",
+      "title": "文件方式须使用已就绪上传会话",
+      "pre": "测试后端支持 FILE_UPLOAD，可预置 READY 及未完成会话，或待 DATA06–08 联通",
+      "data": "EXT 改 FILE_UPLOAD，去 sourceId。uploadId 分别为 READY、未就绪、不存在、缺失",
+      "steps": "分别提交并检查待办；READY 组使用对应测试文件。",
+      "expect": "READY 组 200、PENDING 且只建审批。其余 400 UPLOAD_NOT_READY，无新审批。",
+      "g": "!G-08"
+    },
+    {
+      "id": "TC-35-01",
+      "api": 35,
+      "priority": "P1",
+      "title": "入箱批次可按沙箱、环境和状态筛选",
+      "pre": "S_OWN 的 DEBUG、PRODUCTION 有不同状态批次，另有其他沙箱批次",
+      "data": "sandboxId=S_OWN，environmentId=E_DBG，status=FAILED，keyword=QA批次，pageSize=1",
+      "steps": "分别用各单条件和组合条件查询，对照预置批次。",
+      "expect": "200，PageResult。组合结果满足各条件，id、资源名、沙箱名、环境及进度与夹具一致。失败样本有 failureCode、failureMessage、allowedActions。",
+      "g": ""
+    },
+    {
+      "id": "TC-35-02",
+      "api": 35,
+      "priority": "P1",
+      "title": "入箱成功批次状态及数据集关联",
+      "pre": "外部入箱联调可触发已知行数文件，并可控制进度或读取事件",
+      "data": "输入三行独立记录的测试数据",
+      "steps": "轮询 GET /ingestions，记录阶段。READY 后查对应环境 /datasets。",
+      "expect": "可观察 QUEUED、TRANSFERRING、VALIDATING、READY，最终批次指向目标环境。数据集 sourceIngestionId 等于该批次，行数与测试输入核对。",
+      "g": "!G-17"
+    },
+    {
+      "id": "TC-36-01",
+      "api": 36,
+      "priority": "P0",
+      "title": "失败批次重试复用原标识且不重复入箱",
+      "pre": "I_FAIL=FAILED、allowedActions 含 RETRY，故障已解除，可核对已有部分写入",
+      "data": "I_FAIL 的 ID",
+      "steps": "调用一次 retry，记录返回进度。轮询至 READY，再查数据集和测试记录计数。",
+      "expect": "200，相同 id，返回 QUEUED 且 progressPercent=0。最终同批次只形成一份预期数据，无重复行或重复数据集。",
+      "g": ""
+    },
+    {
+      "id": "TC-36-02",
+      "api": 36,
+      "priority": "P0",
+      "title": "非失败或缺 RETRY 动作不可重试",
+      "pre": "准备 READY、CANCELED 各一条，以及 FAILED 但无 RETRY 动作一条",
+      "data": "三个实际 ingestionId",
+      "steps": "逐一调用 retry，回查各批次及对应数据集。",
+      "expect": "均被拒绝，批次状态和数据集无变化。具体错误码见 G-17。",
+      "g": "G-17"
+    },
+    {
+      "id": "TC-36-03",
+      "api": 36,
+      "priority": "P1",
+      "title": "入箱重试批次不存在",
+      "pre": "A 有 data:use",
+      "data": "不存在的 ingestionId",
+      "steps": "调用 retry 并查看错误体。",
+      "expect": "404 INGESTION_NOT_FOUND，无批次业务数据。",
+      "g": ""
+    },
+    {
+      "id": "TC-36-04",
+      "api": 36,
+      "priority": "P0",
+      "title": "并发重试不重复落数据",
+      "pre": "I_FAIL 可重试，故障已解除，下游可观测写入次数",
+      "data": "同一个 ingestionId，独立发出两次重试",
+      "steps": "同步发出请求，记录两个响应。轮询至稳定后核对批次及数据集。",
+      "expect": "仍只使用一个批次标识，最终只有一份数据、行无重复。第二个请求返回原结果还是拒绝，见 G-17。",
+      "g": "G-17"
+    },
+    {
+      "id": "TC-37-01",
+      "api": 37,
+      "priority": "P1",
+      "title": "按环境读取入箱数据并分页",
+      "pre": "S_OWN 两环境均有同名数据集，且 E_DBG 有 AVAILABLE、OFFLINE 样本",
+      "data": "E_DBG，keyword=QA，status=AVAILABLE，page=1，pageSize=20",
+      "steps": "查询后改用 E_PRD，再用一个无匹配条件。",
+      "expect": "200，PageResult。各查询只含目标环境数据；id、sandboxName、environmentId、sourceIngestionId、schemaSummary、size、status、createdAt、allowedActions 与夹具一致。",
+      "g": ""
+    },
+    {
+      "id": "TC-38-01",
+      "api": 38,
+      "priority": "P0",
+      "title": "结果只读目录按可见性返回已回写数据",
+      "pre": "R_OK 属于 S_OWN，R_OTHER 属于 A 无权访问的 S_OTHER，名称前缀相同",
+      "data": "keyword=QA结果，page=1，pageSize=20",
+      "steps": "以 A 查询，再以 S_OTHER 的合法用户确认 R_OTHER 已存在。",
+      "expect": "200，PageResult。A 能看到 R_OK，响应中无 R_OTHER。id、name、sandboxId、sandboxName、size、createdAt、allowedActions 与夹具一致。",
+      "g": "G-06"
+    },
+    {
+      "id": "TC-39-01",
+      "api": 39,
+      "priority": "P0",
+      "title": "对可见任务结果提交出箱申请",
+      "pre": "A 有 result:export，R_OK 可申请，隔离环境审批开关开启",
+      "data": "EXP 基准",
+      "steps": "提交并保存 exportId、approvalId。查询出箱记录并核对结果关联。",
+      "expect": "200，返回两个字符串 ID、合法 status 和 updatedAt。回查 id、resultId、purpose 与申请一致。初始状态以 G-09 确认为准。",
+      "g": "G-09"
+    },
+    {
+      "id": "TC-39-02",
+      "api": 39,
+      "priority": "P0",
+      "title": "禁止使用不可见结果直接提交出箱",
+      "pre": "A 有 result:export，R_OTHER 确属不可见沙箱",
+      "data": "EXP 仅换 resultId=R_OTHER",
+      "steps": "以 A 直调，然后由有权账号查询相关记录与审批。",
+      "expect": "请求被拒绝，无结果详情泄露，无新增出箱或审批记录。具体错误体见 G-11。",
+      "g": "G-11"
+    },
+    {
+      "id": "TC-39-03",
+      "api": 39,
+      "priority": "P1",
+      "title": "出箱用途和结果 ID 必填",
+      "pre": "A 有权限与多个有效结果",
+      "data": "EXP 单字段变体。purpose=\"\"、测×500/501，另测缺 resultId",
+      "steps": "各用独立结果或重置后提交并查记录。",
+      "expect": "500 字用途接受。空、超长用途或缺结果 ID 返回 400，拒绝组无记录。",
+      "g": ""
+    },
+    {
+      "id": "TC-39-04",
+      "api": 39,
+      "priority": "P0",
+      "title": "出箱申请同 key 重放",
+      "pre": "A 可申请 R_OK，无已有同样申请",
+      "data": "同一份 EXP、同一 UUID",
+      "steps": "提交后原样重发。查出箱列表并核对新增数。",
+      "expect": "返回首次业务结果，两个 ID 相同。只产生一条出箱记录及对应审批。",
+      "g": ""
+    },
+    {
+      "id": "TC-40-01",
+      "api": 40,
+      "priority": "P1",
+      "title": "出箱记录分页与九档状态字典",
+      "pre": "已预置九个状态样本，可同名筛选，A 有访问权",
+      "data": "逐一用执行说明中的 9 个 status 筛选，keyword=QA结果，pageSize=1",
+      "steps": "逐组调用并对照状态夹具，抽查无匹配组合。",
+      "expect": "200，PageResult 只返回匹配状态与关键词的记录。返回 resultName、sandboxName、approvalId、allowedActions 及适用 grantStatus。空页保留完整分页结构。",
+      "g": ""
+    },
+    {
+      "id": "TC-41-01",
+      "api": 41,
+      "priority": "P0",
+      "title": "允许状态签发凭证，禁止未批准请求",
+      "pre": "测试环境已配置可签发凭证及隔离出箱记录",
+      "data": "APPROVED 且 UNUSED、APPROVED 且无 grantStatus、APPROVED 且 EXPIRED、PENDING_APPROVAL、DELIVERED",
+      "steps": "用 A 分别申请，回查记录及审计，记录页面按钮。",
+      "expect": "未批准待审样本不得获得可用凭证。各可签发组合、重签和响应字段按 G-09 确认，成功记录回查 UNUSED。",
+      "g": "?G-09"
+    },
+    {
+      "id": "TC-41-02",
+      "api": 41,
+      "priority": "P0",
+      "title": "下载凭证只可使用一次且过期失效",
+      "pre": "签发和消费接口、TTL 已确认，测试环境可控时间",
+      "data": "凭证 G1 与 G2 对应不同出箱样本",
+      "steps": "G1 下载两次。G2 到达确认的过期时点后首次下载。每次回查状态并保存文件摘要。",
+      "expect": "G1 首次取到匹配结果，状态 CONSUMED，重用无法获得文件。G2 过期后不能下载，状态 EXPIRED。错误体与截止时点按 G-09。",
+      "g": "!G-09"
+    },
+    {
+      "id": "TC-41-03",
+      "api": 41,
+      "priority": "P0",
+      "title": "结果到出箱一次下载的联调串测",
+      "pre": "已回写可见 R_OK，内容审核、审批、下载均已可用",
+      "data": "EXP，审批开关开启，测试结果摘要已记录",
+      "steps": "① A 申请出箱，触发约定的内容审核。② M 批准后 A 申请凭证。③ 下载并重放。",
+      "expect": "① 审批关联原结果。② 仅满足已确认条件后返回可用凭证。③ 首次内容摘要匹配且凭证变 CONSUMED，重放取不到文件。",
+      "g": "!G-09,G-19"
+    },
+    {
+      "id": "TC-42-01",
+      "api": 42,
+      "priority": "P0",
+      "title": "仅交付失败可触发重试",
+      "pre": "A 有 result:export，备 DELIVERY_FAILED 和 DELIVERED，允许控制回传",
+      "data": "两个 exportId",
+      "steps": "分别请求重试，再查出箱记录和下游交付次数。",
+      "expect": "失败样本 200，回到 DELIVERING。已交付样本被拒绝且无新交付。待失败样本回传成功后状态 DELIVERED，结果关联保持。",
+      "g": "G-09,G-17"
+    },
+    {
+      "id": "TC-42-02",
+      "api": 42,
+      "priority": "P1",
+      "title": "重试不存在的出箱单",
+      "pre": "A 有 result:export",
+      "data": "不存在的 exportId",
+      "steps": "调用 retry，核对错误体。",
+      "expect": "404 EXPORT_NOT_FOUND，不返回交付业务信息。",
+      "g": ""
+    },
+    {
+      "id": "TC-43-01",
+      "api": 43,
+      "priority": "P0",
+      "title": "管理员批准待审批出箱记录",
+      "pre": "M 有 result:approve，记录已完成内容审核且 PENDING_APPROVAL",
+      "data": "decision=APPROVE，字段按 G-19 确认后构造",
+      "steps": "提交后查 /exports 及 /audit-logs。",
+      "expect": "审批成功，记录进入批准路径，可在受控流程下观察 APPROVED，后续状态与交付一致。成功审计对应 M 与目标记录。",
+      "g": "?G-19,G-09"
+    },
+    {
+      "id": "TC-43-02",
+      "api": 43,
+      "priority": "P0",
+      "title": "管理员驳回待审批出箱记录",
+      "pre": "M 有 result:approve，记录 PENDING_APPROVAL",
+      "data": "decision=REJECT，字段按 G-19 确认后构造",
+      "steps": "提交并回查出箱记录与交付数据。",
+      "expect": "审批成功，状态 REJECTED。没有交付任务或可用下载凭证，记录保留驳回状态。",
+      "g": "?G-19"
+    },
+    {
+      "id": "TC-43-03",
+      "api": 43,
+      "priority": "P0",
+      "title": "分析员不能决定出箱审批",
+      "pre": "A 有 result:export 但无 result:approve，已知待审批 exportId",
+      "data": "有效决策请求，使用 A 的会话和 Token",
+      "steps": "直调审批，再由 M 回查出箱状态。",
+      "expect": "403，状态不变，无审批或交付副作用。前端 A 不显示审批按钮。",
+      "g": ""
+    },
+    {
+      "id": "TC-43-04",
+      "api": 43,
+      "priority": "P0",
+      "title": "已处理出箱单不能再次决定",
+      "pre": "已有 REJECTED 样本，M 有审批权限",
+      "data": "decision=APPROVE，按确认契约补版本（若要求）",
+      "steps": "尝试二次审批，再查记录及交付。",
+      "expect": "409 EXPORT_ALREADY_DECIDED，原状态保留，无交付。使用当前版本隔离重复处理和版本冲突。",
+      "g": "?G-19"
+    },
+    {
+      "id": "TC-43-05",
+      "api": 43,
+      "priority": "P1",
+      "title": "不存在出箱单不能审批",
+      "pre": "M 有审批权限",
+      "data": "不存在的 exportId，使用联调版本认可的请求体",
+      "steps": "直调接口并检查错误体。",
+      "expect": "404 EXPORT_NOT_FOUND，无审批结果。",
+      "g": ""
+    },
+    {
+      "id": "TC-43-06",
+      "api": 43,
+      "priority": "P0",
+      "title": "出箱审批旧版本与未完成内容审核",
+      "pre": "准备 PENDING_REVIEW、PENDING_APPROVAL 样本及 M 会话",
+      "data": "分别对待内容审核样本提交批准，或对待审批样本提交过期 expectedVersion",
+      "steps": "单项变更后调用，回查两个样本状态和交付。",
+      "expect": "记录能否在 PENDING_REVIEW 决定、版本是否必填及旧版本的响应。按 G-19、G-09 确认结果判定。",
+      "g": "?G-19,G-09"
+    }
+  ]
+}
